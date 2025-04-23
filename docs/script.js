@@ -1116,7 +1116,7 @@ async function processUsername(order) {
       console.log(`Error fetching ${username}: ${e.message}`)
     }
     
-    fetch('https://api.minetools.eu/uuid/${username}')
+    fetch(`https://api.minetools.eu/uuid/${username}`)
     .then(res => res.json())
     .then(content => {
       console.log(content);
