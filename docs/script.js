@@ -1115,6 +1115,15 @@ async function processUsername(order) {
     }catch(e) {
       console.log(`Error fetching ${username}: ${e.message}`)
     }
+    
+    fetch('https://api.minetools.eu/uuid/${username}')
+    .then(res => res.json())
+    .then(content => {
+      console.log(content);
+      const decoded = atob(content.content);
+      const parsed = JSON.parse(decoded);
+      console.log(parsed);
+    });
     try{
       let uuidCheck = `https://api.minetools.eu/uuid/${username}`;
       //let uuidCheck = `https://mc-api.io/profile/${username}/JAVA`;
