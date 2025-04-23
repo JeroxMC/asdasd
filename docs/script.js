@@ -1292,7 +1292,7 @@ async function updatePixelTest(username) {
   }
   if(!defaultBgPixel) {
     try{
-      defaultBgPixel = await loadLocalImage("../assets/images/default-bg.png");
+      defaultBgPixel = await loadLocalImage("https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/default-bg.png");
     }catch(e){
       console.log(e)
       console.log(`Error loading default bg wtf? ${e.message}`);
@@ -1300,7 +1300,7 @@ async function updatePixelTest(username) {
   }
   if(!defaultShadowPixel) {
     try{
-      defaultShadowPixel = await loadLocalImage("../assets/images/20x20pshading.png");
+      defaultShadowPixel = await loadLocalImage("https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/20x20pshading.png");
     }catch(e){
       console.log(e)
       console.log(`Error loading default bg wtf? ${e.message}`);
@@ -1308,7 +1308,7 @@ async function updatePixelTest(username) {
   }
   if(!defaultAlonsoPixel) {
     try{
-      defaultAlonsoPixel = await loadLocalImage("../assets/images/default-pixel.png");
+      defaultAlonsoPixel = await loadLocalImage("https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/default-pixel.png");
     }catch(e){
       console.log(e)
       console.log(`Error loading default AlonsoAliaga pixel wtf? ${e.message}`);
