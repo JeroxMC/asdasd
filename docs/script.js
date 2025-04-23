@@ -1920,7 +1920,7 @@ function loadModels() {
     let renderData = models[renderType];
     let element = document.createElement("div");
     element.classList.add("render-card");
-    let link = renderData.image ? `../assets/images/renders/${renderData.image}` : `https://starlightskins.lunareclipse.studio/render/${renderType}/AlonsoAliaga/${renderData.crops[0]}`;
+    let link = renderData.image ? `https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/renders/${renderData.image}` : `https://starlightskins.lunareclipse.studio/render/${renderType}/AlonsoAliaga/${renderData.crops[0]}`;
     element.innerHTML = `<img src="${link}" alt="${renderData.name} Model">
               <div class="render-label">${renderData.name}</div>`
     element.onclick = function(){selectModel(renderType)}
