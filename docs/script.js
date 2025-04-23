@@ -1116,11 +1116,12 @@ async function processUsername(order) {
       console.log(`Error fetching ${username}: ${e.message}`)
     }
     try{
-      //let uuidCheck = `https://api.minetools.eu/uuid/${username}`;
-      let uuidCheck = `https://mc-api.io/profile/${username}/JAVA`;
+      let uuidCheck = `https://api.minetools.eu/uuid/${username}`;
+      //let uuidCheck = `https://mc-api.io/profile/${username}/JAVA`;
       let response = await fetch(uuidCheck);
       console.log(response)
       console.log(response.body)
+      console.log(response.response)
       let d = JSON.parse(response.body);
       if(d.status == "OK") {
         lastUsernameToUUID = d.name;
