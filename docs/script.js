@@ -531,9 +531,20 @@ const models = {
   "custom-7": {
     restricted: true,
     custom: true,
-    url: `aHR0cHM6Ly9zdGFybGlnaHRza2lucy5sdW5hcmVjbGlwc2Uuc3R1ZGlvL3JlbmRlci9jdXN0b20ve3VzZXJuYW1lfS97Y3JvcH0/d2lkZU1vZGVsPWh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL3JlZnMvaGVhZHMvbWFpbi9yZW5kZXJzL3RlbXBsYXRlX21vZGVsLm9iaiZzbGltTW9kZWw9aHR0cHM6Ly9jZG4ubHVuYXJlY2xpcHNlLnN0dWRpby9tb2RlbC5vYmomY2FtZXJhUG9zaXRpb249eyJ4IjoiMzguNTUiLCJ5IjoiMy42NyIsInoiOiItNTAuNTQifSZjYW1lcmFGb2NhbFBvaW50PXsieCI6IjAuNDkiLCJ5IjoiMTYuNzkiLCJ6IjoiLTQuMTIifQ==`,
+    url: `aHR0cHM6Ly9zdGFybGlnaHRza2lucy5sdW5hcmVjbGlwc2Uuc3R1ZGlvL3JlbmRlci9jdXN0b20ve3VzZXJuYW1lfS97Y3JvcH0/d2lkZU1vZGVsPWh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL3JlZnMvaGVhZHMvbWFpbi9yZW5kZXJzL2xvb2stdGhlcmUub2JqJnNsaW1Nb2RlbD1odHRwczovL2Nkbi5sdW5hcmVjbGlwc2Uuc3R1ZGlvL21vZGVsLm9iaiZjYW1lcmFQb3NpdGlvbj17IngiOiIzOC41NSIsInkiOiIzLjY3IiwieiI6Ii01MC41NCJ9JmNhbWVyYUZvY2FsUG9pbnQ9eyJ4IjoiMC40OSIsInkiOiIxNi43OSIsInoiOiItNC4xMiJ9`,
     image: "custom/custom-7.png",
     name: "Look there! Is that a plane?",
+    crops: [
+      "full",
+      "bust",
+      "face"
+    ]
+  },
+  "custom-8": {
+    custom: true,
+    url: `aHR0cHM6Ly9zdGFybGlnaHRza2lucy5sdW5hcmVjbGlwc2Uuc3R1ZGlvL3JlbmRlci9jdXN0b20ve3VzZXJuYW1lfS97Y3JvcH0/d2lkZU1vZGVsPWh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL3JlZnMvaGVhZHMvbWFpbi9yZW5kZXJzL3lvdS10b28tc21hbGwub2JqJnNsaW1Nb2RlbD1odHRwczovL2Nkbi5sdW5hcmVjbGlwc2Uuc3R1ZGlvL21vZGVsLm9iaiZjYW1lcmFQb3NpdGlvbj17IngiOiIwIiwieSI6Ii0xNS44IiwieiI6Ii0zNi40MiJ9JmNhbWVyYUZvY2FsUG9pbnQ9eyJ4IjoiMCIsInkiOiIxNi41NSIsInoiOiIwIn0=`,
+    image: "custom/custom-8.png",
+    name: "You are too small!",
     crops: [
       "full",
       "bust",
