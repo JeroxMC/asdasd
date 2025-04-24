@@ -754,3 +754,27 @@ ul {
   font-size: 1rem;
   opacity: 0.9;
 }
+
+.locked {
+  position: relative;
+}
+.locked .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  z-index: 10;
+}
+.locked .overlay img {
+  width: 32px;
+  opacity: 0.6;
+}
+.locked .overlay span {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #333;
+}

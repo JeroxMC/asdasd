@@ -1090,6 +1090,8 @@ let lastFailed = false;
 let lastSuccessUsername = "AlonsoAliaga";
 let lastUsernameToUUID = undefined;
 let lastObtainedUUID = undefined;
+let globalModelsLock = false;
+let globalCropsLock = false;
 async function processUsername(order) {
   skinType = 0;
   if(order != "no-cooldown") blockUsername(defaultCooldown);
@@ -1115,7 +1117,23 @@ async function processUsername(order) {
     }catch(e) {
       console.log(`Error fetching ${username}: ${e.message}`)
     }
-    
+    try {
+      const response = await fetch(`https://api.minetools.eu/uuid/${username}`);
+      const parsed = await response.json();
+      /*
+      console.log(content);
+      const decoded = atob(content.content);
+      const parsed = JSON.parse(decoded);
+      */
+      console.log(parsed);
+      lastUsernameToUUID = parsed.name;
+      lastObtainedUUID = parsed.id;
+    } catch (error) {
+      lastUsernameToUUID = undefined;
+      lastObtainedUUID = undefined;
+      console.log("An error occurred:", error);
+    }
+    /*
     fetch(`https://api.minetools.eu/uuid/${username}`)
     .then(res => res.json())
     .then(content => {
@@ -1147,6 +1165,7 @@ async function processUsername(order) {
       console.log(`[Err] Failed to convert to UUID: ${lastUsernameToUUID}`)
       console.log(e)
     }
+    */
     updateModel(username);
     updatePixelTest(username);
     /*
@@ -1953,6 +1972,7 @@ function loadModels() {
   }
 }
 function selectModel(renderType) {
+  if(globalModelsLock) return;
   let renderData = models[renderType];
   if(!renderData) {
     console.log(`Invalid render type?`);
@@ -1974,6 +1994,7 @@ function selectModel(renderType) {
     cropsDiv.appendChild(element);
   }
   updateModel(lastSuccessUsername);
+  lockModels(5);
 }
 function pascalCase(crop) {
   let parts = crop.split(" ");
@@ -1984,9 +2005,11 @@ function pascalCase(crop) {
   return f.join(" ");
 }
 function selectCrop(crop) {
+  if(globalCropsLock) return;
   currentCrop = crop;
   console.log(`Crop selected: ${currentCrop} (${currentRenderType})`)
   updateModel(lastSuccessUsername);
+  lockCrops(5);
 }
 loadModels();
 selectModel("default");
@@ -2007,3 +2030,53 @@ function loadListener() {
   });
 }
 loadListener();
+function lockModels(secs, iconUrl='https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/lock-icon.png') {
+  let cards = document.querySelectorAll(".render-card");
+  globalModelsLock = true;
+  for(let card of cards) {
+    if(card.classList.contains('locked')) return;
+    let seconds = secs;
+    card.classList.add('locked');
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `<img src="${iconUrl}"><span>Available in ${seconds}s</span>`;
+    card.append(ov);
+    const t = setInterval(() => {
+      if (--seconds <= 0) {
+        clearInterval(t);
+        card.classList.remove('locked');
+        ov.remove();
+        globalModelsLock = false;
+      } else {
+        ov.querySelector('span').textContent = `Available in ${seconds}s`;
+      }
+    }, 1000);
+  }
+}
+function lockCrops(secs, iconUrl='https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/lock-icon.png') {
+  let crops = document.querySelectorAll(".cool-button");
+  globalCropsLock = true;
+  for(let crop of crops) {
+    if(crop.classList.contains('locked')) return;
+    let seconds = secs;
+    crop.classList.add('locked');
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `<img src="${iconUrl}"><span>Available in ${seconds}s</span>`;
+    crop.append(ov);
+    const t = setInterval(() => {
+      if (--seconds <= 0) {
+        clearInterval(t);
+        crop.classList.remove('locked');
+        ov.remove();
+        globalCropsLock = false;
+      } else {
+        ov.querySelector('span').textContent = `Available in ${seconds}s`;
+      }
+    }, 1000);
+  }
+}
+// Example: lock all buttons for 5 seconds on page load
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button').forEach(btn => lockModels(btn, 5));
+});
