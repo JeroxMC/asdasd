@@ -527,6 +527,18 @@ const models = {
       "bust",
       "face"
     ]
+  },
+  "custom-7": {
+    restricted: true,
+    custom: true,
+    url: `aHR0cHM6Ly9zdGFybGlnaHRza2lucy5sdW5hcmVjbGlwc2Uuc3R1ZGlvL3JlbmRlci9jdXN0b20ve3VzZXJuYW1lfS97Y3JvcH0/d2lkZU1vZGVsPWh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9BbG9uc29BbGlhZ2EvQWxvbnNvQWxpYWdhQVBJL3JlZnMvaGVhZHMvbWFpbi9yZW5kZXJzL3RlbXBsYXRlX21vZGVsLm9iaiZzbGltTW9kZWw9aHR0cHM6Ly9jZG4ubHVuYXJlY2xpcHNlLnN0dWRpby9tb2RlbC5vYmomY2FtZXJhUG9zaXRpb249eyJ4IjoiMzguNTUiLCJ5IjoiMy42NyIsInoiOiItNTAuNTQifSZjYW1lcmFGb2NhbFBvaW50PXsieCI6IjAuNDkiLCJ5IjoiMTYuNzkiLCJ6IjoiLTQuMTIifQ==`,
+    image: "custom/custom-7.png",
+    name: "Look there! Is that a plane?",
+    crops: [
+      "full",
+      "bust",
+      "face"
+    ]
   }
 }
 const modelsCache = new Map();
