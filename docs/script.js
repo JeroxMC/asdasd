@@ -662,6 +662,7 @@ function loadKey(window) {
             v = btoa(v);
             if(v == "ZGV2ZWxvcG1lbnQ=") {
               console.log(`Allowed params..`)
+              unblock();
               return;
             }
           }
@@ -917,15 +918,37 @@ function processComparator(processedCurrent,processedNew) {
 function downloadProfile() {
   let removeWatermark = document.getElementById("button-remove-watermark-download")
   if(removeWatermark && !removeWatermark.checked) {
-    let context = markedCanvas.getContext("2d");
-    context.clearRect(0, 0, markedCanvas.width, markedCanvas.height);
-    context.drawImage(siteCanvas,0,0);
+    console.log(`Downloading with watermark..`)
+    let additionalHeight = Math.round(siteCanvas.height / 16);
+    let additonalBoderBottom = Math.round(siteCanvas.height / 75);
+    markedCanvas.width = siteCanvas.width;
+    markedCanvas.height = siteCanvas.height + additonalBoderBottom + additionalHeight;
+    let markedCtx = markedCanvas.getContext("2d");
+    const text = "Generated on https://alonsoaliaga.com/mc-renders";
+    markedCtx.fillStyle = "#302a3b"; // Set the fill color to white
+    markedCtx.fillRect(0, siteCanvas.height + additonalBoderBottom, siteCanvas.width, additionalHeight);
+    let fontSize = 50; // Initial font size
+    let textWidth = 0;
+    do {
+      fontSize--; // Decrease the font size
+      markedCtx.font = `${fontSize}px MinecraftBold`; // Set the new font size
+      textWidth = markedCtx.measureText(text).width;
+    } while (textWidth > (markedCanvas.width - 50));
+    markedCtx.fillStyle = "#ffffff"; // Set the fill color to gray
+    markedCtx.font = `${fontSize}px MinecraftBold`; // Set the font style
+    markedCtx.textAlign = "center"; // Set the text alignment to center
+    markedCtx.textBaseline = "middle"; // Set the text baseline to middle
+    markedCtx.fillText(text, markedCanvas.width / 2, siteCanvas.height + additonalBoderBottom + Math.round(additionalHeight / 2)); // Write the text at the center of the rectangle
+
+    //markedCtx.clearRect(0, 0, markedCanvas.width, markedCanvas.height);
+    markedCtx.drawImage(siteCanvas,0,0);
     var anchor = document.createElement("a");
     anchor.href = markedCanvas.toDataURL("image/png");
     let username = usernameInput?.value || "AlonsoAliaga";
     anchor.download = `MinecraftPFP-${username}.png`;
     anchor.click();
   }else{
+    console.log(`Downloading without watermark..`)
     var anchor = document.createElement("a");
     anchor.href = siteCanvas.toDataURL("image/png");
     let username = usernameInput?.value || "AlonsoAliaga";
@@ -950,9 +973,9 @@ function toggleWatermark(event) {
   let removeWatermark = document.getElementById("button-remove-watermark-download").checked;
   let downloadButton = document.getElementById("download-all-label");
   if(removeWatermark) {
-    downloadButton.innerText = "Download your McPFP without watermark📥"
+    downloadButton.innerText = "Download your Minecraft Render without watermark📥"
   }else{
-    downloadButton.innerText = "Download your McPFP with watermark 📥"
+    downloadButton.innerText = "Download your Minecraft Render with watermark 📥"
   }
 }
 let colorsButton = document.getElementById("colors-amount");
@@ -1619,22 +1642,6 @@ async function addListeners() {
         processUsername();
     }
   });
-  let markedCtx = markedCanvas.getContext("2d");
-  const text = "Generated on https://alonsoaliaga.com/mc-renders";
-  markedCtx.fillStyle = "#302a3b"; // Set the fill color to white
-  markedCtx.fillRect(0, 300, 300, 20);
-  let fontSize = 24; // Initial font size
-  let textWidth = 0;
-  do {
-    fontSize--; // Decrease the font size
-    markedCtx.font = `${fontSize}px MinecraftBold`; // Set the new font size
-    textWidth = markedCtx.measureText(text).width;
-  } while (textWidth > 290);
-  markedCtx.fillStyle = "#ffffff"; // Set the fill color to gray
-  markedCtx.font = `${fontSize}px MinecraftBold`; // Set the font style
-  markedCtx.textAlign = "center"; // Set the text alignment to center
-  markedCtx.textBaseline = "middle"; // Set the text baseline to middle
-  markedCtx.fillText(text, markedCanvas.width / 2, 310); // Write the text at the center of the rectangle
   processUsername("no-cooldown");
   /*
   for(let i = 0; i < maxColorsAmount; i++) {
@@ -1972,7 +1979,12 @@ function loadModels() {
   }
 }
 function selectModel(renderType) {
-  if(globalModelsLock) return;
+  if(globalModelsLock) {
+    let modelKey = `${lastSuccessUsername.toLowerCase()}$$$${currentRenderType}$$$${currentCrop}`;
+    if(!modelsCache.has(modelKey)) {
+      return;
+    }
+  }
   let renderData = models[renderType];
   if(!renderData) {
     console.log(`Invalid render type?`);
@@ -1994,22 +2006,41 @@ function selectModel(renderType) {
     cropsDiv.appendChild(element);
   }
   updateModel(lastSuccessUsername);
-  lockModels(5);
+  if(!modelsCache.has(`${lastSuccessUsername.toLowerCase()}$$$${currentRenderType}$$$${currentCrop}`)) {
+    lockModels(5);
+    lockCrops(3);
+  }
 }
 function pascalCase(crop) {
-  let parts = crop.split(" ");
-  let f = [];
-  for(let part of parts) {
-    f.push(part.slice(0,1).toUpperCase() + part.slice(1).toLowerCase());
+  if(crop.includes("_")) {
+    let parts = crop.split("_");
+    let f = [];
+    for(let part of parts) {
+      f.push(part.slice(0,1).toUpperCase() + part.slice(1).toLowerCase());
+    }
+    return f.join(" ");
+  }else{
+    let parts = crop.split(" ");
+    let f = [];
+    for(let part of parts) {
+      f.push(part.slice(0,1).toUpperCase() + part.slice(1).toLowerCase());
+    }
+    return f.join(" ");
   }
-  return f.join(" ");
 }
 function selectCrop(crop) {
-  if(globalCropsLock) return;
+  if(globalCropsLock) {
+    let modelKey = `${lastSuccessUsername.toLowerCase()}$$$${currentRenderType}$$$${currentCrop}`;
+    if(!modelsCache.has(modelKey)) {
+      return;
+    }
+  }
   currentCrop = crop;
   console.log(`Crop selected: ${currentCrop} (${currentRenderType})`)
   updateModel(lastSuccessUsername);
-  lockCrops(5);
+  if(!modelsCache.has(`${lastSuccessUsername.toLowerCase()}$$$${currentRenderType}$$$${currentCrop}`)) {
+    lockCrops(5);
+  }
 }
 loadModels();
 selectModel("default");
