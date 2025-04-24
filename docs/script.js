@@ -918,7 +918,7 @@ function downloadProfile() {
   let removeWatermark = document.getElementById("button-remove-watermark-download")
   if(removeWatermark && !removeWatermark.checked) {
     let context = markedCanvas.getContext("2d");
-    context.clearRect(0, 0, 300, 300);
+    context.clearRect(0, 0, markedCanvas.width, markedCanvas.height);
     context.drawImage(siteCanvas,0,0);
     var anchor = document.createElement("a");
     anchor.href = markedCanvas.toDataURL("image/png");
