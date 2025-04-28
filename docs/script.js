@@ -1138,6 +1138,7 @@ let lastUsernameToUUID = undefined;
 let lastObtainedUUID = undefined;
 let globalModelsLock = false;
 let globalCropsLock = false;
+let cacheUserUUID = new Map();
 async function processUsername(order) {
   skinType = 0;
   if(order != "no-cooldown") blockUsername(defaultCooldown);
@@ -1163,21 +1164,27 @@ async function processUsername(order) {
     }catch(e) {
       console.log(`Error fetching ${username}: ${e.message}`)
     }
-    try {
-      const response = await fetch(`https://api.minetools.eu/uuid/${username}`);
-      const parsed = await response.json();
-      /*
-      console.log(content);
-      const decoded = atob(content.content);
-      const parsed = JSON.parse(decoded);
-      */
-      console.log(parsed);
-      lastUsernameToUUID = parsed.name;
-      lastObtainedUUID = parsed.id;
-    } catch (error) {
-      lastUsernameToUUID = undefined;
-      lastObtainedUUID = undefined;
-      console.log("An error occurred:", error);
+    if(!cacheUserUUID.has(username.toLowerCase())) {
+      try {
+        const response = await fetch(`https://api.minetools.eu/uuid/${username}`);
+        const parsed = await response.json();
+        /*
+        console.log(content);
+        const decoded = atob(content.content);
+        const parsed = JSON.parse(decoded);
+        */
+        console.log(parsed);
+        lastUsernameToUUID = parsed.name;
+        lastObtainedUUID = parsed.id;
+        cacheUserUUID.set(parsed.name.toLowerCase(),parsed.id);
+        console.log(`Valid uuid saved in cache: ${username} -> ${cacheUserUUID.get(username.toLowerCase())}`);
+      } catch (error) {
+        lastUsernameToUUID = undefined;
+        lastObtainedUUID = undefined;
+        console.log("An error occurred:", error);
+      }
+    }else{
+      console.log(`Username in cache: ${username} -> ${cacheUserUUID.get(username.toLowerCase())}`);
     }
     /*
     fetch(`https://api.minetools.eu/uuid/${username}`)
@@ -1846,7 +1853,7 @@ function loadCounter() {
  let href = window.location.href;
  if(!href.includes(atob("YWxvbnNvYWxpYWdhLmdpdGh1Yi5pbw=="))) return;
  let link = atob("aHR0cHM6Ly9hbG9uc29hbGlhZ2EtcGFnZS1jb3VudC5nbGl0Y2gubWUvY291bnRlcj9zaXRlPTxzaXRlPiZrZXk9PGtleT4=")
-  .replace(/<site>/g,"minecraft-pfp").replace(/<key>/g,"KEY-A");
+  .replace(/<site>/g,"mc-renders").replace(/<key>/g,"KEY-A");
  let counter = document.getElementById("visitor-counter");
  if(counter) {
    $.ajax({
