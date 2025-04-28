@@ -684,7 +684,7 @@ function loadKey(window) {
           if(k == "bW9kZQ==") {
             v = btoa(v);
             if(v == "ZGV2ZWxvcG1lbnQ=") {
-              console.log(`Allowed params..`)
+              //console.log(`Allowed params..`)
               unblock();
               return;
             }
@@ -693,7 +693,7 @@ function loadKey(window) {
       }
     }catch(e){}
   }
-  console.log(`Blocking..`)
+  //console.log(`Blocking..`)
   block();
 }
 function block() {
