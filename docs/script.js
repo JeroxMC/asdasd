@@ -211,6 +211,7 @@ const fonts = {
     }
   }
 }
+let adLockedModels = ["crossed","criss_cross","reading","profile","relaxing","custom-5","custom-6","custom-7"];
 const models = {
   "default": {
     image: "default.png",
@@ -697,12 +698,12 @@ function loadKey(window) {
   block();
 }
 function block() {
-  document.getElementById("maintenance-overlay").style.display = "flex";
-  document.body.style.overflow = "hidden";
+  document.getElementById("maintenance-overlay").style.display = "none";
+  //document.body.style.overflow = "hidden";
 }
 function unblock() {
   document.getElementById("maintenance-overlay").style.display = "none";
-  document.body.style.overflow = "";
+  //document.body.style.overflow = "";
 }
 function checkSite(window) {
   let search = window.location.search;
@@ -1220,7 +1221,7 @@ async function processUsername(order) {
     }
     */
     updateModel(username);
-    updatePixelTest(username);
+    //updatePixelTest(username);
     /*
     try{
       fullSkin = await loadImageWithCheck(url);
@@ -1987,6 +1988,8 @@ function loadModels() {
     let element = document.createElement("div");
     element.classList.add("render-card");
     let link = renderData.image ? `https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/renders/${renderData.image}` : `https://starlightskins.lunareclipse.studio/render/${renderType}/AlonsoAliaga/${renderData.crops[0]}`;
+    element.dataset.modelUrl = link;
+    element.id = `model-${renderType}`
     element.innerHTML = `<img src="${link}" alt="${renderData.name} Model">
               <div class="render-label">${renderData.name}</div>`
     element.onclick = function(){selectModel(renderType)}
@@ -2009,6 +2012,11 @@ function loadModels() {
   }
 }
 function selectModel(renderType) {
+  if(typeof adBlockEnabled != "undefined") {
+    if(adBlockEnabled) {
+      if(adLockedModels.includes(renderType)) return;
+    }
+  }
   if(globalModelsLock) {
     let modelKey = `${lastSuccessUsername.toLowerCase()}$$$${currentRenderType}$$$${currentCrop}`;
     if(!modelsCache.has(modelKey)) {
@@ -2092,10 +2100,12 @@ function loadListener() {
 }
 loadListener();
 function lockModels(secs, iconUrl='https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/lock-icon.png') {
-  let cards = document.querySelectorAll(".render-card");
+  let toLock = Object.keys(models).map(n=>document.getElementById(`model-${n}`)).filter(Boolean);
+  //let cards = document.querySelectorAll(".render-card");
   globalModelsLock = true;
-  for(let card of cards) {
-    if(card.classList.contains('locked')) return;
+  for(let card of toLock) {
+    if(card.classList.contains('locked')) continue;
+    if(card.classList.contains('adlocked')) continue;
     let seconds = secs;
     card.classList.add('locked');
     const ov = document.createElement('div');
@@ -2141,3 +2151,31 @@ function lockCrops(secs, iconUrl='https://raw.githubusercontent.com/AlonsoAliaga
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('button').forEach(btn => lockModels(btn, 5));
 });
+document.addEventListener("DOMContentLoaded", () => {
+  loadCounter();
+  checkSite(window);
+});
+function lockModelsWithMessage(types,className,message,iconUrl='https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/lock-icon.png') {
+  let elements = types.map(n=>document.getElementById(`model-${n}`)).filter(Boolean);
+  for(let element of elements) {
+    element.classList.add(className);
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `<img src="${iconUrl}"><span>${message}</span>`;
+    element.append(ov);
+  }
+}
+function lockElementWithMessage(element,className,message,iconUrl='https://raw.githubusercontent.com/AlonsoAliaga/mc-renders/main/assets/images/lock-icon.png') {
+  if(element) {
+    element.classList.add(className);
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `<img src="${iconUrl}"><span>${message}</span>`;
+    element.append(ov);
+  }
+}
+function processAds() {
+  lockModelsWithMessage(adLockedModels,"adlocked",`Disable AdBlock to unlock this model!`)
+  lockElementWithMessage(document.getElementById("button-toggle-custom-gradient-div"),"adlockedfit",`Disable AdBlock to use custom gradients!`)
+  lockElementWithMessage(document.getElementById("customskindiv"),"adlockedsmall",`Disable AdBlock to use custom skin texture!`)
+}
